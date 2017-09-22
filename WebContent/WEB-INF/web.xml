@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		 xmlns="http://java.sun.com/xml/ns/javaee" 
+		 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+		 	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+  
+  <!-- 配置Struts2的核心过滤器 -->
+  <filter>
+  		<filter-name>hrm</filter-name>
+  		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  		<filter-name>hrm</filter-name>
+  		<url-pattern>*.action</url-pattern>
+  </filter-mapping>
+  
+  <!-- 配置DWR核心的Servlet -->
+  <servlet>
+    <servlet-name>dwr-invoker</servlet-name>
+    <servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
+    <!-- 开启调式模式 -->
+    <init-param>
+    	<param-name>debug</param-name>
+    	<param-value>true</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+  	 <servlet-name>dwr-invoker</servlet-name>
+  	 <url-pattern>/dwr/*</url-pattern>
+  </servlet-mapping>
+  
+  <!-- 配置jsp页面全局信息 -->
+  <jsp-config>
+  		<jsp-property-group>
+  			<!-- 拦截所有的jsp页面运用下面的设置 -->
+  			<url-pattern>*.jsp</url-pattern>
+  			<!-- EL表达式是否忽略: false:不忽略   -->
+  			<el-ignored>false</el-ignored>
+  			<!-- jsp页面上java脚本是否失效： true失效 -->
+  			<scripting-invalid>true</scripting-invalid>
+  			<!-- 指定包含一个页面 -->
+  			<include-prelude>/WEB-INF/jsp/taglib.jsp</include-prelude>
+  		</jsp-property-group>
+  </jsp-config>
+  
+  <!-- 配置出错页面 -->
+  <error-page>
+  	<error-code>404</error-code>
+  	<location>/404.html</location>
+  </error-page>
+  
+  <!-- 欢迎列表 -->
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

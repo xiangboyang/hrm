@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.fkjava.hrm.mapper.JobMapper">
+	<!-- 根据主键id获取部门 -->
+	<select id="get" resultType="Job">
+		select * from hrm_job where id = #{id}
+	</select>
+	
+	<!-- 查询所有的职位id、name -->
+	<select id="find" resultType="map">
+		select id, name from hrm_job order by id asc
+	</select>
+</mapper>

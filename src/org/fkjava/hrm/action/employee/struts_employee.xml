@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <package name="employee" namespace="/employee" extends="hrm">
+    
+    	<!-- 多条件分页查询员工 -->
+		<action name="selectEmployee" class="org.fkjava.hrm.action.employee.EmployeeAction" method="selectEmployee">
+			<result>/WEB-INF/jsp/employee/employee.jsp</result>
+		</action>
+		
+		<!-- 员工资料导出Excel -->
+		<action name="downExcel" class="org.fkjava.hrm.action.employee.EmployeeAction" method="downExcel">
+		</action>
+		
+		<!-- 跳转到添加员工页面 -->
+		<action name="showAddEmployee">
+			<result>/WEB-INF/jsp/employee/addEmployee.jsp</result>
+		</action>
+
+    </package>
+	
+</struts>

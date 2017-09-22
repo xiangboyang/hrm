@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <package name="dept" namespace="/dept" extends="hrm">
+		<!-- 分页查询部门 -->
+		<action name="selectDept" class="org.fkjava.hrm.action.dept.DeptAction" method="selectDept">
+			<result>/WEB-INF/jsp/dept/dept.jsp</result>
+		</action>
+		
+		<!-- 跳转到修改部门的页面 -->
+		<action name="showUpdateDept" class="org.fkjava.hrm.action.dept.DeptAction" method="showUpdateDept">
+			<result>/WEB-INF/jsp/dept/updateDept.jsp</result>
+		</action>
+		
+		<!-- 修改部门 -->
+		<action name="updateDept" class="org.fkjava.hrm.action.dept.DeptAction" method="updateDept">
+			<result>/WEB-INF/jsp/dept/updateDept.jsp</result>
+		</action>
+		
+		<!-- 跳转到添加部门页面 -->
+		<action name="showAddDept">
+			<result>/WEB-INF/jsp/dept/addDept.jsp</result>
+		</action>
+		
+		<!-- 修改部门 -->
+		<action name="addDept" class="org.fkjava.hrm.action.dept.DeptAction" method="addDept">
+			<result>/WEB-INF/jsp/dept/addDept.jsp</result>
+		</action>
+		
+		<!-- 删除部门 -->
+		<action name="deleteDept" class="org.fkjava.hrm.action.dept.DeptAction" method="deleteDept">
+			<result type="chain">selectDept</result>
+		</action>
+		
+		<!-- 异步加载部门 -->
+		<action name="deptAjax" class="org.fkjava.hrm.action.dept.DeptAjax"></action>
+    </package>
+	
+</struts>

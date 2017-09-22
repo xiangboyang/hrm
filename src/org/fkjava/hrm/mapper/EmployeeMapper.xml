@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.fkjava.hrm.mapper.EmployeeMapper">
+	
+	<!-- 配置基础结果集映射 -->
+	<resultMap type="Employee" id="baseResult" autoMapping="true">
+		<result column="CARD_ID" property="cardId"/>
+		<result column="POST_CODE" property="postCode"/>
+		<result column="QQ_NUM" property="qqNum"/>
+		<result column="CREATE_DATE" property="createDate"/>
+	</resultMap>
+	<!-- 配置分页结果集映射 -->
+	<resultMap type="Employee" id="pageResult" extends="baseResult">
+		<!-- 员工与部门存在多对一关联 -->
+		<association property="dept" column="DEPT_ID" javaType="Dept"
+				select="org.fkjava.hrm.mapper.DeptMapper.get"/>
+		<!-- 员工与职位存在多对一关联 -->
+		<association property="job" column="JOB_ID" javaType="Job"
+				select="org.fkjava.hrm.mapper.JobMapper.get"/>
+	</resultMap>
+	
+	<!-- 定义通用的SQL语句 -->
+	<sql id="pageSql">
+		from hrm_employee
+		<where>
+			<!-- 添加查询条件 -->
+			<if test="employee != null">
+				<!-- 职位 -->
+				<if test="employee.job != null &amp;&amp; employee.job.id > 0">
+					JOB_ID = #{employee.job.id}
+				</if>
+				<!-- 部门 -->
+				<if test="employee.dept != null &amp;&amp; employee.dept.id > 0">
+					AND DEPT_ID = #{employee.dept.id}
+				</if>
+				<!-- 姓名-->
+				<if test="employee.name != null &amp;&amp; employee.name !=''">
+					AND NAME like CONCAT('%', #{employee.name}, '%') 
+				</if>
+				<!-- 身份证号码-->
+				<if test="employee.cardId != null &amp;&amp; employee.cardId !=''">
+					AND CARD_ID like CONCAT('%', #{employee.cardId}, '%') 
+				</if>
+				<!-- 性别 -->
+				<if test="employee.sex > 0">
+					AND SEX = #{employee.sex}
+				</if>
+				<!-- 手机号码-->
+				<if test="employee.phone != null &amp;&amp; employee.phone !=''">
+					AND PHONE like CONCAT('%', #{employee.phone}, '%') 
+				</if>
+			</if>
+		</where>
+		order by CREATE_DATE asc
+	</sql>
+	
+	<!-- 统计查询 -->
+	<select id="count" resultType="int">
+		select count(*) <include refid="pageSql"/>
+	</select>
+	
+	<!-- 分页查询 -->
+	<select id="findByPage" resultMap="pageResult">
+		select * <include refid="pageSql"/> limit #{pageModel.startRow}, #{pageModel.pageSize}
+	</select>
+	
+	<!-- 查询员工要导出Excel的数据 -->
+	<select id="find" resultType="EmployeeData">
+		SELECT e.id, e.name, e.sex, e.PHONE,e.EMAIL, j.name AS jobName, 
+		       e.EDUCATION, e.CARD_ID AS cardId,d.name AS deptName,
+		       e.ADDRESS,e.CREATE_DATE AS createDate 
+		FROM hrm_employee AS e, hrm_dept AS d, hrm_job AS j 
+		WHERE e.DEPT_ID = d.ID AND e.JOB_ID = j.ID
+		<!-- 添加查询条件 -->
+		<if test="employee != null">
+			<!-- 职位 -->
+			<if test="employee.job != null &amp;&amp; employee.job.id > 0">
+				AND e.JOB_ID = #{employee.job.id}
+			</if>
+			<!-- 部门 -->
+			<if test="employee.dept != null &amp;&amp; employee.dept.id > 0">
+				AND e.DEPT_ID = #{employee.dept.id}
+			</if>
+			<!-- 姓名-->
+			<if test="employee.name != null &amp;&amp; employee.name !=''">
+				AND e.NAME like CONCAT('%', #{employee.name}, '%') 
+			</if>
+			<!-- 身份证号码-->
+			<if test="employee.cardId != null &amp;&amp; employee.cardId !=''">
+				AND e.CARD_ID like CONCAT('%', #{employee.cardId}, '%') 
+			</if>
+			<!-- 性别 -->
+			<if test="employee.sex > 0">
+				AND e.SEX = #{employee.sex}
+			</if>
+			<!-- 手机号码-->
+			<if test="employee.phone != null &amp;&amp; employee.phone !=''">
+				AND e.PHONE like CONCAT('%', #{employee.phone}, '%') 
+			</if>
+		</if>
+		order by e.CREATE_DATE asc
+	</select>
+	
+</mapper>

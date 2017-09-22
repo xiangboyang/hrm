@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 3.0//EN" "http://getahead.org/dwr/dwr30.dtd">
+
+<dwr>
+  <!-- allow：核心配置部分，主要配置java类与javaScript对象之间的转换关系 -->
+  <allow>
+  	<!-- create: 创建器，指明用什么方式创建该类的对象, 再转换成javaScript中的哪个对象 -->
+  	 <create creator="new" javascript="DwrService">
+  	 	<!-- 具体的类 -->
+  	 	<param name="class" value="org.fkjava.hrm.service.dwr.DwrService"/>
+  	 </create>
+  	 
+  	 <!-- 
+  	 		java数据类型                                                                                   javascript数据类型
+  	     基本数据类型(int, float, double, String..)       基本数据类型(Number, String..)   
+  	        String[]                                   Array
+  	        Map<String, String>                        json
+  	        List<String>                               Array
+  	        List<User>                                 [{},{}]
+  	        User                                        {}
+  	  -->
+  	  <!-- 自定义数据类型要指定数据类型转换器 -->
+  </allow>
+  
+  
+
+</dwr>

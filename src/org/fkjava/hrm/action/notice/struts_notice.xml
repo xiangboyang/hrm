@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <package name="notice" namespace="/notice" extends="hrm">
+    
+		<!-- 分页查询公告 -->
+		<action name="selectNotice" class="org.fkjava.hrm.action.notice.NoticeAction" method="selectNotice">
+			<result name="success">/WEB-INF/jsp/notice/notice.jsp</result>
+		</action>
+		
+		<!-- 跳转到添加公告页面 -->
+		<action name="showAddNotice">
+			<result name="success">/WEB-INF/jsp/notice/addNotice.jsp</result>
+		</action>
+		
+		<!-- 添加公告 -->
+		<action name="addNotice" class="org.fkjava.hrm.action.notice.NoticeAction" method="addNotice">
+			<!-- 登录拦截器 -->
+			<interceptor-ref name="loginStack"/>
+			<!-- 防表单重复提交 -->
+			<interceptor-ref name="token"/>
+			<result name="success">/WEB-INF/jsp/notice/addNotice.jsp</result>
+			<!-- xxx-validation.xml -->
+			<result name="input">/WEB-INF/jsp/notice/addNotice.jsp</result>
+			<!-- 表单重复提交时 -->
+			<result name="invalid.token">/WEB-INF/jsp/notice/addNotice.jsp</result>
+		</action>
+		
+		<!-- 跳转到修改公告页面 -->
+		<action name="showUpdateNotice" class="org.fkjava.hrm.action.notice.NoticeAction" method="showUpdateNotice">
+			<result name="success">/WEB-INF/jsp/notice/updateNotice.jsp</result>
+		</action>
+		
+		<!-- 修改公告 -->
+		<action name="updateNotice" class="org.fkjava.hrm.action.notice.NoticeAction" method="updateNotice">
+			<!-- 登录拦截器 -->
+			<interceptor-ref name="loginStack"/>
+			<!-- 防表单重复提交 -->
+			<interceptor-ref name="token"/>
+			<result name="success">/WEB-INF/jsp/notice/updateNotice.jsp</result>
+			<!-- xxx-validation.xml -->
+			<result name="input">/WEB-INF/jsp/notice/updateNotice.jsp</result>
+			<!-- 表单重复提交时 -->
+			<result name="invalid.token">/WEB-INF/jsp/notice/updateNotice.jsp</result>
+		</action>
+		
+		<!-- 删除公告 -->
+		<action name="deleteNotice" class="org.fkjava.hrm.action.notice.NoticeAction" method="deleteNotice">
+			<result type="chain">selectNotice</result>
+		</action>
+		
+		<!-- 公告预览 -->
+		<action name="prevNotice">
+			<result>/WEB-INF/jsp/notice/prevNotice.jsp</result>
+		</action>
+		
+		<!-- 异步加载公告内容 -->
+		<action name="noticeAjax" class="org.fkjava.hrm.action.notice.NoticeAjax"></action>
+    </package>
+	
+</struts>

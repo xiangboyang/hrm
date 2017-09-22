@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.fkjava.hrm.mapper.DocumentMapper">
+
+	<!-- 结果集映射 -->
+	<resultMap type="Document" id="baseResult" autoMapping="true">
+		<result column="CREATE_DATE" property="createDate"/>
+	</resultMap>
+	<!-- 分页结果集映射 -->
+	<resultMap type="Document" id="pageResult" extends="baseResult">
+		<!-- 文档的创建人与用户存在多对一关联 -->
+		<association property="user" column="USER_ID" javaType="User"
+				    select="org.fkjava.hrm.mapper.UserMapper.get"/>
+	</resultMap>
+
+	<!-- 定义通用的SQL语句 -->
+	<sql id="pageSql">
+		from hrm_document
+		<where>
+			<if test="document != null">
+				<!-- 标题 -->
+				<if test="document.title != null &amp;&amp; document.title !=''">
+					title like CONCAT('%', #{document.title} ,'%')
+				</if>
+			</if>
+		</where>
+		order by id asc
+	</sql>
+	<!-- 统计查询  -->
+	<select id="count" resultType="int">
+		<!-- prefix: 在前加上select count(*) -->
+		<trim prefix="select count(*)">
+			<include refid="pageSql"/>
+		</trim>
+	</select>
+	
+	<!-- 分页查询 -->
+	<select id="findByPage" resultMap="pageResult">
+		<trim prefix="select *" suffix="limit">
+			<!-- 引用通用的SQL语句 -->
+			<include refid="pageSql"/>
+		</trim>
+		#{pageModel.startRow}, #{pageModel.pageSize}
+	</select>
+	
+	<!-- 添加文档 -->
+	<insert id="save">
+		insert into hrm_document(title, url, remark, user_id)
+		       values(#{title}, #{url}, #{remark}, #{user.id})
+	</insert>
+	
+	<!-- 获取文档 -->
+	<select id="get" resultType="Document">
+		select * from hrm_document where id = #{id}
+	</select>
+	
+	<!-- 修改文档 -->
+	<update id="update">
+		update hrm_document 
+			set title = #{title}, 
+			    url = #{url}, 
+			    remark = #{remark} 
+		    where id = #{id}
+	</update>	
+	
+	<!-- 删除文档 -->
+	<delete id="delete">
+		delete from hrm_document where id = #{id}
+	</delete>
+	
+</mapper>

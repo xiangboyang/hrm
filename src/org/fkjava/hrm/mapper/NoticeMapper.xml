@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.fkjava.hrm.mapper.NoticeMapper">
+
+	<!-- 基础的映射 -->
+	<resultMap type="Notice" id="baseResult" autoMapping="true">
+		<result column="CREATE_DATE" property="createDate"/>
+	</resultMap>
+	<!-- 分页结果集映射 -->
+	<resultMap type="Notice" id="pageResult" extends="baseResult">
+		<!-- 公告的创建人与用户存在多对一关联 -->
+		<association property="user" column="USER_ID" javaType="User" 
+			select="org.fkjava.hrm.mapper.UserMapper.get"/>
+	</resultMap>
+	
+	<!-- 定义通用的SQL语句 -->
+	<sql id="pageSql">
+		from hrm_notice
+		<where>
+			<if test="notice != null">
+				<!-- 按标题查询 -->
+				<if test="notice.title != null &amp;&amp; notice.title !=''">
+					title like CONCAT('%', #{notice.title},'%')
+				</if>
+			</if>
+		</where>
+	</sql>
+		
+	<!-- 统计查询 -->
+	<select id="count" resultType="int">
+		<trim prefix="select count(*)">
+			 <include refid="pageSql"/>
+		</trim>
+	</select>
+	
+	<!-- 分页查询 -->
+	<select id="findByPage" resultMap="pageResult">
+		<trim prefix="select *" suffix="limit">
+			 <include refid="pageSql"/> 
+		</trim>
+		 #{pageModel.startRow},#{pageModel.pageSize}
+	</select>
+	
+	<!-- 添加公告 -->
+	<insert id="save">
+		INSERT INTO `hrm_notice` (`TITLE`, `CONTENT`,`CREATE_DATE`, `USER_ID`)
+			VALUES(#{title}, #{content}, #{createDate}, #{user.id})
+	</insert>
+	
+	<!-- 获取公告 -->
+	<select id="get" resultType="Notice">
+		select * from hrm_notice where id = #{id}
+	</select>
+	
+	<!-- 修改公告 -->
+	<update id="update">
+		UPDATE hrm_notice 
+			SET TITLE = #{title}, 
+			    CONTENT = #{content}
+			WHERE
+			ID = #{id}
+	</update>
+	
+	<!-- 批量删除 -->
+	<delete id="batchDelete">
+	   <!-- DELETE FROM hrm_notice WHERE id IN(?,?,?) -->
+		delete from hrm_notice where id in
+		<!--  collection : 集合：list、 数组[]：array-->
+		<foreach collection="array" open="(" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+	</delete>
+</mapper>

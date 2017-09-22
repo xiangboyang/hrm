@@ -1,0 +1,7 @@
+/db.properties
+/dto.properties
+/hrm_messages.properties
+/log4j.properties
+/mybatis-config.xml
+/org/
+/struts.xml

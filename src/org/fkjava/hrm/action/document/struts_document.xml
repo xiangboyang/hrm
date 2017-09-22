@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <package name="document" namespace="/document" extends="hrm">
+
+		<!-- 分页查询文档 -->
+		<action name="selectDocument" class="org.fkjava.hrm.action.document.DocumentAction" method="selectDocument">
+			<result>/WEB-INF/jsp/document/document.jsp</result>
+		</action>
+		
+		<!--  跳转到添加文档的页面 -->
+		<action name="showAddDocument">
+			<result>/WEB-INF/jsp/document/addDocument.jsp</result>
+		</action>
+		
+		<!-- 添加文档 -->
+		<action name="addDocument" class="org.fkjava.hrm.action.document.DocumentAction" method="addDocument">
+			<interceptor-ref name="loginStack">
+				<!-- 配置允许上传的文件类型 -->
+				<param name="fileUpload.allowedTypes">application/vnd.ms-excel,application/msword,text/plain,application/vnd.ms-powerpoint,application/pdf</param>
+				<!-- 配置允许上传的文件大小：1.5MB -->
+				<param name="fileUpload.maximumSize">1.5 * 1024 * 1024</param>
+			</interceptor-ref>
+			<interceptor-ref name="token"/>
+			<result>/WEB-INF/jsp/document/addDocument.jsp</result>
+			<result name="input">/WEB-INF/jsp/document/addDocument.jsp</result>
+			<result name="invalid.token">/WEB-INF/jsp/document/addDocument.jsp</result>
+		</action>
+		
+		<!-- 跳转到修改文档页面  -->
+		<action name="showUpdateDocument" class="org.fkjava.hrm.action.document.DocumentAction" method="showUpdateDocument">
+			<result>/WEB-INF/jsp/document/updateDocument.jsp</result>
+		</action>
+		
+		<!-- 修改文档 -->
+		<action name="updateDocument" class="org.fkjava.hrm.action.document.DocumentAction" method="updateDocument">
+			<interceptor-ref name="loginStack">
+				<!-- 配置允许上传的文件类型 -->
+				<param name="fileUpload.allowedTypes">application/vnd.ms-excel,application/msword,text/plain,application/vnd.ms-powerpoint,application/pdf</param>
+				<!-- 配置允许上传的文件大小：1.5MB -->
+				<param name="fileUpload.maximumSize">1.5 * 1024 * 1024</param>
+			</interceptor-ref>
+			<interceptor-ref name="token"/>
+			<result>/WEB-INF/jsp/document/updateDocument.jsp</result>
+			<result name="input">/WEB-INF/jsp/document/updateDocument.jsp</result>
+			<result name="invalid.token">/WEB-INF/jsp/document/updateDocument.jsp</result>
+		</action>
+		
+		<!-- 删除文档 -->
+		<action name="deleteDocument" class="org.fkjava.hrm.action.document.DocumentAction" method="deleteDocument">
+			<result type="chain">selectDocument</result>
+		</action>
+		
+		<!-- 下载文档 -->
+		<action name="downDocument" class="org.fkjava.hrm.action.document.DocumentAction" method="downDocument">
+			<result name="success" type="redirectAction">
+				<!-- 指定action的名字 -->
+				<param name="actionName">downLoad.action?downFileName=${document.title}&amp;fileUrl=${document.url}</param>
+				<!-- 指定命名空间 -->
+				<param name="namespace">/</param>
+				<!-- 指定参数编码 URLEncoder.encode-->
+				<param name="encode">true</param>
+			</result>
+			<result name="input" type="chain">selectDocument</result>
+		</action>
+    </package>
+	
+</struts>

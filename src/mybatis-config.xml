@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+	PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 配置加载数据库连接的属性文件 -->
+	<properties resource="db.properties"></properties>
+	
+	<!-- 全局的设置 -->
+	<settings>
+		<!-- 开启缓存 -->
+		<setting name="cacheEnabled" value="true"/>
+		<!-- 开启延迟加载 -->
+		<setting name="lazyLoadingEnabled" value="true"/>
+		<!-- 配置按需要进行延迟加载 -->
+		<setting name="aggressiveLazyLoading" value="false"/>
+	</settings>
+	
+	<!-- 配置类型别名： myBatis需要转换成哪个对象的别名 -->
+	<typeAliases>
+		<!-- 定义单个的类型别名 -->
+		<typeAlias type="org.fkjava.hrm.pojo.EmployeeData" alias="EmployeeData"/>
+		<!-- 扫描org.fkjava.hrm.domain下所有的类都作为myBatis的类型别名 (默认类型别名就是类名) -->
+		<package name="org.fkjava.hrm.domain"/>
+	</typeAliases>
+	
+	<!-- 配置MyBatis环境 -->
+	<environments default="hrm">
+		<!-- 配置一个默认的环境 -->
+		<environment id="hrm">
+			<!-- 配置事务管理器 -->
+			<transactionManager type="JDBC"/>
+			<!-- 配置数据源: POOLED用MyBatis自带的连接池 -->
+			<dataSource type="POOLED">
+				<!-- 驱动 -->
+				<property name="driver" value="${driver}"/>
+				<!-- url -->
+				<property name="url" value="${url}"/>
+				<!-- 用户名 -->
+				<property name="username" value="${username}"/>
+				<!-- 密码 -->
+				<property name="password" value="${password}"/>
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<!-- 配置数据访问接口 -->
+	<mappers>
+		<!-- 扫描org.fkjava.hrm.mapper包下所有接口类都作为MyBatis数据持久层访问接口。 UserMapper.java与UserMapper.xml -->
+		<package name="org.fkjava.hrm.mapper"/>
+	</mappers>
+</configuration>

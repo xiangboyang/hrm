@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.fkjava.hrm.mapper.UserMapper">
+	
+	<!-- ResultSet Mapping : 结果集映射  把hrm_user表中的一行映射成User实体 -->
+	<resultMap type="User" id="baseResult" autoMapping="true">
+		<result column="PASS_WORD" property="passWord"/>
+		<result column="CREATE_DATE" property="createDate"/>
+	</resultMap>
+	<!-- 根据用户名与密码查询用户 -->
+	<select id="findUserByUserIdAndPassword" resultMap="baseResult">
+		SELECT * FROM hrm_user WHERE NAME = #{userId} AND PASS_WORD = #{pwd}
+	</select>
+	
+	<!-- 根据主键id获取用户 -->
+	<select id="get" resultType="User">
+		select * from hrm_user where id = #{id}
+	</select>
+</mapper>

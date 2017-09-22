@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	
+	<!-- 配置Struts2常量 -->
+    <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+    <constant name="struts.devMode" value="true" />
+    <constant name="struts.action.extension" value="action,do"/>
+    <!-- 配置全局的国际化资源文件 -->
+    <constant name="struts.custom.i18n.resources" value="hrm_messages"/>
+
+    <package name="hrm" namespace="/" extends="struts-default">
+    
+    	<!-- 配置拦截器 -->
+    	<interceptors>
+    		<!-- 配置登录拦截器 -->
+    		<interceptor name="loginInterceptor" class="org.fkjava.hrm.action.interceptor.LoginInterceptor"/>
+    		<!-- 配置登录拦截栈 -->
+    		<interceptor-stack name="loginStack">
+    			<interceptor-ref name="defaultStack"/>
+    			<interceptor-ref name="loginInterceptor"/>
+    		</interceptor-stack>
+    	</interceptors>
+    	
+    	<!-- 配置默认的拦截器引用 -->
+    	<default-interceptor-ref name="loginStack"/>
+
+		<!-- 全局的逻辑视图与物理视图配置 -->
+        <global-results>
+            <result name="error">/error.jsp</result>
+            <result name="login">/WEB-INF/jsp/login.jsp</result>
+        </global-results>
+        
+		<!-- 全局的异常配置 -->
+        <global-exception-mappings>
+            <exception-mapping exception="java.lang.Exception" result="error"/>
+        </global-exception-mappings>
+        
+        <!-- 配置验证码 -->
+        <action name="verify" class="org.fkjava.hrm.action.base.VerifyAction">
+        	<!-- 配置自已的拦截器 , 只要一个Action配置自已的拦截器，那么全局的拦截器就会失效-->
+        	<interceptor-ref name="defaultStack"/>
+        </action>
+        
+        <!-- 异步请求登录 -->
+        <action name="loginAjax" class="org.fkjava.hrm.action.LoginAjax">
+        	<!-- 配置自已的拦截器 , 只要一个Action配置自已的拦截器，那么全局的拦截器就会失效-->
+        	<interceptor-ref name="defaultStack"/>
+        </action>
+        
+        <!-- 文件异步上传 -->
+        <action name="uploadAjax" class="org.fkjava.hrm.action.UploadAjax"></action>
+        
+        
+        <!-- 专门下载的Action -->
+        <action name="downLoad" class="org.fkjava.hrm.action.base.DownLoadAction">
+        	<result name="success" type="stream">
+				<!-- 指定inputName : InputStream method name当前action中要有一个InputStream getFileStream()的方法， 该方法返回值为InputStream -->
+				<param name="inputName">fileStream</param>
+				<!-- 指定下载文件内容性质：contentDisposition attachment:附属信息(指定下载时显示的文件名)-->
+				<param name="contentDisposition">attachment;filename="${downFileName}"</param>
+				<!-- 下载时，缓冲流大小 -->
+				<param name="bufferSize">2048</param>
+			</result>
+        </action>
+        
+        <!-- 配置全局的Action, 匹配所有的请求 main.action、left.action  -->
+        <action name="*">
+        	<result>/WEB-INF/jsp/{1}.jsp</result>
+        </action>
+		
+      
+    </package>
+	<!-- 引入Struts2模块级别的配置文件 -->
+	<include file="org/fkjava/hrm/action/dept/struts_dept.xml"/>
+	<include file="org/fkjava/hrm/action/document/struts_document.xml"/>
+	<include file="org/fkjava/hrm/action/employee/struts_employee.xml"/>
+	<include file="org/fkjava/hrm/action/job/struts_job.xml"/>
+	<include file="org/fkjava/hrm/action/notice/struts_notice.xml"/>
+	<include file="org/fkjava/hrm/action/user/struts_user.xml"/>
+</struts>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.fkjava.hrm.mapper.DeptMapper">
+	<!-- 统计查询 -->
+	<select id="count" resultType="int">
+		select count(*) from hrm_dept
+	</select>
+	
+	<!-- 分页查询 
+		resultType: 数据库表的列名与实体的属性一致，可以自动映射
+		resultMap: 数据库表的列名与实体的属性不一致时，要主动映射
+	-->
+	<select id="findByPage" resultType="Dept">
+		select * from hrm_dept limit #{pageModel.startRow},#{pageModel.pageSize}
+	</select>
+	
+	<!-- 根据主键id获取部门 -->
+	<select id="get" resultType="Dept">
+		select * from hrm_dept where id = #{id}
+	</select>
+	
+	<!-- 修改部门 -->
+	<select id="update">
+		update hrm_dept set name = #{name}, remark = #{remark} where id = #{id}
+	</select>
+	
+	<!-- 添加部门 -->
+	<select id="save">
+		insert into hrm_dept(name, remark) values(#{name}, #{remark})
+	</select>
+	
+	<!-- 删除部门 -->
+	<delete id="delete">
+		delete from hrm_dept where id = #{id}
+	</delete>
+	
+	<!-- 查询所有部门(id,name) -->
+	<select id="find" resultType="map">
+		select id, name from hrm_dept order by id asc
+	</select>
+</mapper>
